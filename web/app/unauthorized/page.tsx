@@ -4,7 +4,7 @@ import { ArrowRight, ShieldAlert, Smartphone } from "lucide-react";
 import { getAuthState } from "@/lib/auth/session";
 import { ROLE_HOME } from "@/lib/auth/roles";
 import { ROLE_LABEL } from "@/lib/domain/labels";
-import { buttonStyles } from "@/components/ui/button";
+import { buttonStyles } from "@/components/ui/button-styles";
 import { SignOutButton } from "@/features/auth/SignOutButton";
 
 export const metadata: Metadata = { title: "No access" };
