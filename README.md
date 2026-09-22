@@ -9,6 +9,7 @@ The patient Android app is in `mobile`. The clinician website is in `web`. Staff
 - `supabase/migrations` — schema, row level security, and demo seed
 - `backend` — TypeScript API for API Gateway
 - `mobile` — Android patient app
+- `web` — clinician website (doctor, nurse, and admin workspaces)
 - `docs` — problem statement, hardware, architecture, API, database, deployment
 
 ## Deploy on AWS Lambda
