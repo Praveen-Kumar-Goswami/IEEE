@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
 
   const staff = decodeStaffSession(request.cookies.get(STAFF_SESSION_COOKIE)?.value);
   if (staff) {
-    role = "admin";
+    role = staff.role;
   } else if (!env.demoMode) {
     const session = await readSession(request);
     role = session.role;
@@ -39,7 +39,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (pathname === "/login" && (staff || role === "doctor" || role === "nurse" || role === "admin")) {
-    return redirectWithCookies(new URL(staff ? ROLE_HOME.admin : ROLE_HOME[role as "doctor" | "nurse" | "admin"], request.url), response);
+    return redirectWithCookies(new URL(staff ? ROLE_HOME[staff.role] : ROLE_HOME[role as "doctor" | "nurse" | "admin"], request.url), response);
   }
 
   return response;

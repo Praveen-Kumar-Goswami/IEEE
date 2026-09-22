@@ -18,7 +18,7 @@ export type AuthState =
 /** Server-side identity for layouts. proxy.ts has already rejected the wrong roles. */
 export async function getAuthState(): Promise<AuthState> {
   const session = decodeStaffSession((await cookies()).get(STAFF_SESSION_COOKIE)?.value);
-  if (session) return { status: "staff", viewer: workspaceViewer("admin", session) };
+  if (session) return { status: "staff", viewer: workspaceViewer(session.role, session) };
 
   if (env.demoMode) return { status: "signed_out" };
 

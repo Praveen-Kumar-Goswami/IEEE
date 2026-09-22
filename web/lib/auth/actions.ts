@@ -3,7 +3,8 @@
 import { cookies } from "next/headers";
 import { DEMO_ROLE_COOKIE, env } from "@/lib/env";
 import { getServerSupabase } from "@/lib/supabase/server";
-import { safeStaffPath } from "./roles";
+import { ROLE_HOME, safeNextPath } from "./roles";
+import { staffAccountForEmail } from "./staff-accounts";
 import { encodeStaffSession, STAFF_SESSION_COOKIE } from "./staff-session";
 
 const SESSION_SECONDS = 8 * 60 * 60;
@@ -29,10 +30,16 @@ export async function signInStaff(email: string, password: string, next?: string
     return { ok: false as const, error: body?.error?.message || "That email and password do not match an account." };
   }
 
+  const account = staffAccountForEmail(body.session.email);
+  const role = account?.role ?? "admin";
   const store = await cookies();
   store.set(
     STAFF_SESSION_COOKIE,
-    encodeStaffSession({ email: body.session.email, fullName: body.session.full_name?.trim() || body.session.email }),
+    encodeStaffSession({
+      email: body.session.email,
+      fullName: body.session.full_name?.trim() || account?.fullName || body.session.email,
+      role,
+    }),
     {
       httpOnly: true,
       sameSite: "lax",
@@ -41,7 +48,7 @@ export async function signInStaff(email: string, password: string, next?: string
       maxAge: SESSION_SECONDS,
     },
   );
-  return { ok: true as const, redirectTo: safeStaffPath(next) };
+  return { ok: true as const, redirectTo: next ? safeNextPath(next, role) : ROLE_HOME[role] };
 }
 
 export async function signOut() {

@@ -7,6 +7,8 @@ import { motion } from "motion/react";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { signInStaff } from "@/lib/auth/actions";
+import { STAFF_ACCOUNTS, type StaffAccount } from "@/lib/auth/staff-accounts";
+import { ROLE_LABEL } from "@/lib/domain/labels";
 import { BEZIER, DURATION } from "@/lib/motion/tokens";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Button } from "@/components/ui/button";
@@ -41,7 +43,7 @@ export function LoginView({ next }: { next: string | null }) {
             Welcome <span className="text-editorial text-ivory">back.</span>
           </motion.h1>
           <motion.p {...enter(0.16)} className="mt-4 text-body text-graphite-300">
-            One account for the care team. Sign in through the Lambda API, then open the doctor, nurse, or admin workspace.
+            Choose a staff entry. Each one signs in through the Lambda API and opens that workspace.
           </motion.p>
           <motion.div {...enter(0.22)} className="mt-10">
             <PasswordForm next={next} />
@@ -62,12 +64,11 @@ function PasswordForm({ next }: { next: string | null }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
+  const signIn = async (accountEmail: string, accountPassword: string) => {
     setError(null);
     setPending(true);
     try {
-      const result = await signInStaff(email.trim(), password, next);
+      const result = await signInStaff(accountEmail.trim(), accountPassword, next);
       if (!result.ok) {
         setError(result.error);
         return;
@@ -81,8 +82,39 @@ function PasswordForm({ next }: { next: string | null }) {
     }
   };
 
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    void signIn(email, password);
+  };
+
+  const useAccount = (account: StaffAccount) => {
+    setEmail(account.email);
+    setPassword(account.password);
+    void signIn(account.email, account.password);
+  };
+
   return (
     <form onSubmit={submit} className="space-y-5" noValidate>
+      <div className="space-y-2">
+        {STAFF_ACCOUNTS.map((account) => (
+          <button
+            key={account.role}
+            type="button"
+            disabled={pending}
+            onClick={() => useAccount(account)}
+            className="flex w-full items-center justify-between gap-3 rounded-2xl border border-(--line) bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-(--line-strong) hover:bg-white/[0.04] disabled:opacity-50"
+          >
+            <span>
+              <span className="block text-small font-medium text-bone">{ROLE_LABEL[account.role]}</span>
+              <span className="mt-0.5 block text-[12px] text-graphite-400">{account.fullName}</span>
+            </span>
+            <span className="min-w-0 text-right">
+              <span className="block truncate text-[12px] text-graphite-200">{account.email}</span>
+              <span className="mt-0.5 block font-mono text-[12px] text-graphite-400">{account.password}</span>
+            </span>
+          </button>
+        ))}
+      </div>
       <Field label="Work email">
         {({ id, describedBy, invalid }) => (
           <Input
@@ -122,7 +154,7 @@ function PasswordForm({ next }: { next: string | null }) {
       <Button type="submit" variant="primary" size="lg" loading={pending} disabled={!email || !password} className="w-full" iconRight={<ArrowRight className="size-4" />}>
         Sign in
       </Button>
-      <p className="text-center text-[12px] text-graphite-400">Checked by the AWS Lambda API. After sign-in you can open the doctor, nurse, and admin workspaces.</p>
+      <p className="text-center text-[12px] text-graphite-400">Checked by the AWS Lambda API. A doctor opens the doctor workspace, a nurse the nurse workspace, and an admin the admin workspace.</p>
     </form>
   );
 }
