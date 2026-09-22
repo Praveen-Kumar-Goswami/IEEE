@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: Smart dressing indicator API
+  version: 0.1.0
+  description: Monitoring of a simulated dressing. Not a diagnosis of surgical-site infection.
+servers:
+  - url: http://127.0.0.1:43127
+paths:
+  /health:
+    get:
+      security: []
+      responses:
+        "200":
+          description: Process is up
+  /v1/mobile/sync/readings:
+    post:
+      security: [{ bearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncEnvelope"
+      responses:
+        "200":
+          description: Upload result with client reading ids
+  /v1/mobile/sessions:
+    post:
+      security: [{ bearer: [] }]
+      responses:
+        "201":
+          description: Session created
+        "200":
+          description: Existing session returned
+        "409":
+          description: Another session is still open
+  /v1/mobile/sessions/{sessionId}/end:
+    post:
+      security: [{ bearer: [] }]
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Completed or already completed
+  /v1/patients/me/summary:
+    get:
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Patient indication, trend, and open indicators
+  /v1/clinician/patients:
+    get:
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Assigned patients, or all patients for an admin
+  /v1/clinician/patients/{patientId}/monitoring:
+    get:
+      security: [{ bearer: [] }]
+      parameters:
+        - $ref: "#/components/parameters/PatientId"
+      responses:
+        "200":
+          description: Sessions, readings, notes, and indicator alerts
+  /v1/alerts/{alertId}/acknowledge:
+    post:
+      security: [{ bearer: [] }]
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Acknowledged indicator
+        "403":
+          description: Patient or unassigned clinician
+        "409":
+          description: Indicator is already resolved
+  /v1/notes:
+    post:
+      security: [{ bearer: [] }]
+      responses:
+        "201":
+          description: Note stored
+        "400":
+          description: Text claims a diagnosis
+  /v1/admin/devices/assign:
+    post:
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Device paired to a patient
+  /v1/admin/assignments:
+    post:
+      security: [{ bearer: [] }]
+      responses:
+        "201":
+          description: Clinician assignment created
+  /v1/admin/roles:
+    post:
+      security: [{ bearer: [] }]
+      responses:
+        "200":
+          description: Profile role updated
+  /v1/admin/alert-rules:
+    post:
+      security: [{ bearer: [] }]
+      responses:
+        "201":
+          description: Threshold rule created
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    PatientId:
+      name: patientId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  schemas:
+    SyncEnvelope:
+      type: object
+      required: [session_id, readings]
+      properties:
+        device_id: { type: string, format: uuid }
+        device_serial: { type: string, example: ESP32-001 }
+        session_id: { type: string, format: uuid }
+        readings:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            required: [client_reading_id, captured_at, device_status]
+            properties:
+              client_reading_id: { type: string, format: uuid }
+              sequence: { type: integer }
+              captured_at: { type: string, format: date-time }
+              localized_temperature_c: { type: number }
+              ambient_temperature_c: { type: number }
+              humidity_percent: { type: number }
+              relative_moisture_value: { type: integer, minimum: 0, maximum: 4095 }
+              battery_percent: { type: number }
+              device_status:
+                type: string
+                enum: [normal, connected, watch, attention, offline, syncing]
+security:
+  - bearer: []

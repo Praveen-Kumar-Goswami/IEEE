@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Simulated-dressing indicator API. Monitoring only. Not a diagnosis.
+
+Parameters:
+  SupabaseUrl:
+    Type: String
+    Description: Project URL, for example https://PROJECT.supabase.co
+  SupabaseServiceRoleKey:
+    Type: String
+    NoEcho: true
+    Description: Service-role key. Stays in the Lambda environment only.
+  CorsAllowedOrigins:
+    Type: String
+    Default: ""
+    Description: Comma-separated browser origins. Use * for bearer-token clients.
+  LogLevel:
+    Type: String
+    Default: info
+    AllowedValues: [silent, info, error]
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures: [arm64]
+    Timeout: 15
+    MemorySize: 256
+    Handler: handler.handler
+    Environment:
+      Variables:
+        SUPABASE_URL: !Ref SupabaseUrl
+        SUPABASE_SERVICE_ROLE_KEY: !Ref SupabaseServiceRoleKey
+        CORS_ALLOWED_ORIGINS: !Ref CorsAllowedOrigins
+        LOG_LEVEL: !Ref LogLevel
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: "$default"
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda-artifact/
+      Description: HTTP API for simulated dressing indicator uploads and clinician review.
+      FunctionUrlConfig:
+        AuthType: NONE
+      Events:
+        Proxy:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: ANY
+            Path: /{proxy+}
+            PayloadFormatVersion: "2.0"
+        Root:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: ANY
+            Path: /
+            PayloadFormatVersion: "2.0"
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway HTTP API base URL
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  FunctionUrl:
+    Description: Lambda function URL. Same handler as the HTTP API.
+    Value: !GetAtt ApiFunctionUrl.FunctionUrl

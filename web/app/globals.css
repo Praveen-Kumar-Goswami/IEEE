@@ -1,0 +1,645 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
+@custom-variant motion-ok (@media (prefers-reduced-motion: no-preference));
+
+@theme {
+  /* Surfaces */
+  --color-void: #07080a;
+  --color-graphite-950: #0b0c0e;
+  --color-graphite-900: #111316;
+  --color-graphite-850: #16181c;
+  --color-graphite-800: #1c1f23;
+  --color-graphite-750: #22252a;
+  --color-graphite-700: #2a2e34;
+  --color-graphite-600: #3a3f47;
+  --color-graphite-500: #4f555e;
+  --color-graphite-400: #6f757f;
+  --color-graphite-300: #959ba4;
+  --color-graphite-200: #c0c4ca;
+  --color-graphite-100: #dfe0e2;
+
+  /* Warm whites */
+  --color-bone: #edeae4;
+  --color-ivory: #f5f2ec;
+  --color-paper: #faf8f4;
+
+  /* Signal and status */
+  --color-signal: #74d8c0;
+  --color-signal-soft: #a9ead9;
+  --color-signal-deep: #2a9c83;
+  --color-normal: #74d8c0;
+  --color-watch: #e9b861;
+  --color-attention: #f27a62;
+  --color-critical: #f0545c;
+  --color-info: #8ab4f8;
+  --color-offline: #6f757f;
+  --color-copper: #c98b5b;
+
+  /* Type scale */
+  --text-display-xl: clamp(3.4rem, 10.2vw, 11.5rem);
+  --text-display-xl--line-height: 0.86;
+  --text-display-xl--letter-spacing: -0.052em;
+  --text-display-l: clamp(2.9rem, 7.6vw, 8.25rem);
+  --text-display-l--line-height: 0.9;
+  --text-display-l--letter-spacing: -0.048em;
+  --text-display-m: clamp(2.3rem, 5.2vw, 5.25rem);
+  --text-display-m--line-height: 0.96;
+  --text-display-m--letter-spacing: -0.04em;
+  --text-h1: clamp(1.9rem, 3.4vw, 3.25rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.032em;
+  --text-h2: clamp(1.45rem, 2.2vw, 2.1rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.024em;
+  --text-h3: 1.2rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.012em;
+  --text-body-l: 1.125rem;
+  --text-body-l--line-height: 1.6;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.5;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.14em;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+
+  /* Elevation */
+  --shadow-e1: inset 0 1px 0 rgb(255 255 255 / 0.03), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-e2: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 10px 30px -12px rgb(0 0 0 / 0.65);
+  --shadow-e3: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 30px 80px -24px rgb(0 0 0 / 0.8);
+  --shadow-glow: 0 0 0 1px rgb(116 216 192 / 0.28), 0 0 36px -6px rgb(116 216 192 / 0.4);
+
+  /* Blur */
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 32px;
+
+  /* Easing */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-cine: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+
+  /* Breakpoints (sm 640, md 768, lg 1024, xl 1280, 2xl 1536 are Tailwind defaults) */
+  --breakpoint-3xl: 120rem;
+
+  --animate-shimmer: shimmer 1.8s var(--ease-in-out-cine) infinite;
+  --animate-pulse-soft: pulse-soft 2.4s var(--ease-in-out-cine) infinite;
+  --animate-shake: shake 420ms var(--ease-out-quart);
+  --animate-page-in: page-in 560ms var(--ease-out-expo) both;
+  --animate-rise-in: rise-in 680ms var(--ease-out-expo) both;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-serif: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+}
+
+:root {
+  /* Motion durations: micro 120–250, standard 300–700, cinematic 800–1800 */
+  --dur-micro-fast: 120ms;
+  --dur-micro: 180ms;
+  --dur-micro-slow: 240ms;
+  --dur-standard-fast: 320ms;
+  --dur-standard: 480ms;
+  --dur-standard-slow: 680ms;
+  --dur-cine-fast: 900ms;
+  --dur-cine: 1300ms;
+  --dur-cine-slow: 1700ms;
+
+  /* Layers */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-nav: 200;
+  --z-drawer: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-command: 600;
+  --z-grain: 800;
+  --z-cursor: 900;
+  --z-loader: 1000;
+
+  /* Layout */
+  --gutter: clamp(1rem, 2vw, 2rem);
+  --margin: clamp(1.25rem, 4vw, 4rem);
+  --page-max: 1680px;
+  --section-space: clamp(7rem, 16vw, 15rem);
+  --nav-height: 76px;
+  --sidebar-width: 248px;
+  --sidebar-collapsed: 72px;
+
+  --line: rgb(237 234 228 / 0.08);
+  --line-strong: rgb(237 234 228 / 0.16);
+  --surface-1: rgb(22 24 28 / 0.72);
+  --surface-2: rgb(28 31 35 / 0.9);
+
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    background: var(--color-graphite-950);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "cv11";
+    scrollbar-color: var(--color-graphite-600) transparent;
+    scrollbar-width: thin;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: rgb(116 216 192 / 0.28);
+    color: var(--color-ivory);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-graphite-400);
+  }
+
+  /* Custom cursor hides the native pointer, except where precise text input is needed. */
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+
+  html.has-custom-cursor input:not([type="checkbox"], [type="radio"], [type="range"]),
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor [contenteditable="true"] {
+    cursor: text !important;
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--margin);
+}
+
+@utility grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+}
+
+@utility text-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@utility text-editorial {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+@utility hairline {
+  border-color: var(--line);
+}
+
+@utility surface {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+@utility section-space {
+  padding-block: var(--section-space);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Underline draws in from the left on hover and retracts to the right. */
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--dur-standard-fast) var(--ease-out-expo), color var(--dur-micro) var(--ease-out-quart);
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+}
+
+/* Staggered entrance for dashboard blocks: each direct child rises 60 ms after the last. */
+@utility stagger-in {
+  & > * {
+    animation: var(--animate-rise-in);
+  }
+  & > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+  & > :nth-child(3) {
+    animation-delay: 120ms;
+  }
+  & > :nth-child(4) {
+    animation-delay: 180ms;
+  }
+  & > :nth-child(5) {
+    animation-delay: 240ms;
+  }
+  & > :nth-child(6) {
+    animation-delay: 300ms;
+  }
+  & > :nth-child(n + 7) {
+    animation-delay: 360ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    & > * {
+      animation: none;
+    }
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes grain-shift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-3%, 2%, 0);
+  }
+  40% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  60% {
+    transform: translate3d(-2%, -1%, 0);
+  }
+  80% {
+    transform: translate3d(3%, 3%, 0);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -3%, 0) scale(1.06);
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(0, -60vh, 0);
+    opacity: 0;
+  }
+}
+
+/* Live charts: each new sample shifts the line by one step; slide it in so time reads as continuous. */
+@keyframes chart-slide {
+  from {
+    transform: translateX(var(--slide));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+@keyframes draw-in {
+  from {
+    stroke-dashoffset: var(--len, 1000);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+html.is-loading body {
+  overflow: hidden;
+}
+
+/* ───────────── Route transitions (React ViewTransition) ───────────── */
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-standard);
+  animation-timing-function: var(--ease-out-expo);
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-out {
+  to {
+    transform: translate3d(var(--vt-offset, -40px), 0, 0) scale(0.985);
+    filter: blur(6px);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide-in {
+  from {
+    transform: translate3d(var(--vt-offset, 40px), 0, 0) scale(0.985);
+    filter: blur(6px);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-rise-in {
+  from {
+    transform: translate3d(0, 24px, 0);
+    filter: blur(8px);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-sink-out {
+  to {
+    transform: translate3d(0, -12px, 0) scale(0.99);
+    filter: blur(8px);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-mask-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes vt-via-blur {
+  40% {
+    filter: blur(4px);
+  }
+}
+
+/* Forward: content slides left out, new content in from the right. */
+::view-transition-old(.nav-forward) {
+  --vt-offset: -48px;
+  animation: var(--dur-standard-fast) var(--ease-in-quart) both vt-slide-out;
+}
+::view-transition-new(.nav-forward) {
+  --vt-offset: 48px;
+  animation: var(--dur-standard) var(--ease-out-expo) 120ms both vt-slide-in;
+}
+::view-transition-old(.nav-back) {
+  --vt-offset: 48px;
+  animation: var(--dur-standard-fast) var(--ease-in-quart) both vt-slide-out;
+}
+::view-transition-new(.nav-back) {
+  --vt-offset: -48px;
+  animation: var(--dur-standard) var(--ease-out-expo) 120ms both vt-slide-in;
+}
+
+/* Section change inside a workspace: vertical, quieter than a page change. */
+::view-transition-old(.nav-section) {
+  animation: var(--dur-micro-slow) var(--ease-in-quart) both vt-sink-out;
+}
+::view-transition-new(.nav-section) {
+  animation: var(--dur-standard) var(--ease-out-expo) 80ms both vt-rise-in;
+}
+
+/* Entering the platform: a vertical mask reveal. */
+::view-transition-old(.nav-enter) {
+  animation: var(--dur-standard) var(--ease-in-out-cine) both vt-fade-out;
+}
+::view-transition-new(.nav-enter) {
+  animation: var(--dur-cine-fast) var(--ease-in-out-cine) both vt-mask-in;
+}
+
+/* Shared elements morph with a short blur to hide interpolation. */
+::view-transition-group(.morph) {
+  animation-duration: var(--dur-standard);
+  animation-timing-function: var(--ease-out-expo);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vt-via-blur;
+}
+
+/* Anchors: navigation chrome stays still while content moves. */
+::view-transition-group(site-nav),
+::view-transition-group(dash-sidebar),
+::view-transition-group(dash-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-nav),
+::view-transition-old(dash-sidebar),
+::view-transition-old(dash-header) {
+  display: none;
+}
+::view-transition-new(site-nav),
+::view-transition-new(dash-sidebar),
+::view-transition-new(dash-header) {
+  animation: none;
+}
+
+html.reduced-motion *,
+html.reduced-motion *::before,
+html.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+html.reduced-motion ::view-transition-old(*),
+html.reduced-motion ::view-transition-new(*),
+html.reduced-motion ::view-transition-group(*) {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
+/* ───────────── Recharts theming ───────────── */
+
+.recharts-cartesian-grid line {
+  stroke: var(--line);
+}
+.recharts-text {
+  fill: var(--color-graphite-300);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+.recharts-surface:focus,
+.recharts-wrapper:focus,
+.recharts-sector:focus {
+  outline: none;
+}
+
+/* ───────────── Print (report export) ───────────── */
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+  .print-sheet {
+    position: static !important;
+    inset: auto !important;
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .print-sheet * {
+    color: #111 !important;
+    border-color: #ddd !important;
+  }
+}

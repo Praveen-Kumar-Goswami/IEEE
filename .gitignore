@@ -1,0 +1,15 @@
+node_modules/
+.next/
+dist/
+lambda-artifact/
+.env
+.env.*
+!**/.env.example
+.aws-sam/
+coverage/
+*.tsbuildinfo
+.DS_Store
+mobile/build/
+mobile/.dart_tool/
+mobile/android/.gradle/
+*.apk
